@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+model User {
+  id           String        @id @default(uuid())
+  name         String?
+  email        String        @unique
+  role         Role          @default(USER)
+  sessions     Session[]
+  accounts     Account[]
+  transactions Transaction[]
+}
+
+model Account {
+  id                String @id @default(uuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id      String   @id @default(uuid())
+  userId  String
+  expires DateTime
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id      String   @id @default(uuid())
+  concept String
+  amount  Float
+  date    DateTime @default(now())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
