@@ -1,0 +1,41 @@
+"""
+Indicates exactly one field must be supplied and this field must not be `null`.
+"""
+directive @oneOf on INPUT_OBJECT
+
+type User {
+  id: ID!
+  name: String
+  email: String!
+  role: Role!
+}
+
+type Transaction {
+  id: ID!
+  concept: String!
+  amount: Float!
+  date: String!
+  user: User!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type Report {
+  totalIncome: Float!
+  totalExpenses: Float!
+  balance: Float!
+}
+
+type Query {
+  getTransactions(filter: String): [Transaction]!
+  getUsers: [User]!
+  getReports: Report!
+}
+
+type Mutation {
+  createTransaction(concept: String!, amount: Float!): Transaction
+  updateUserRole(userId: ID!, role: Role!): User
+}

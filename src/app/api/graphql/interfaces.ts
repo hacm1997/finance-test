@@ -21,7 +21,7 @@ export interface Transaction {
   id: string;
   concept: string;
   amount: number;
-  date: string;
+  date: Date;
   userId: string;
 }
 

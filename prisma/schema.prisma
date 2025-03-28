@@ -3,30 +3,51 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model User {
-  id           String        @id @default(uuid())
-  name         String?
-  email        String        @unique
-  role         Role          @default(USER)
-  sessions     Session[]
-  accounts     Account[]
-  transactions Transaction[]
+  id            String        @id @default(uuid())
+  name          String?
+  email         String        @unique
+  image         String?
+  emailVerified DateTime?
+  role          Role          @default(USER)
+  sessions      Session[]
+  accounts      Account[]
+  transactions  Transaction[]
 }
 
 model Account {
-  id                String @id @default(uuid())
+  id                String  @id @default(uuid())
   userId            String
   provider          String
   providerAccountId String
-  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  id_token          String?
+  scope             String?
+  token_type        String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id      String   @id @default(uuid())
-  userId  String
-  expires DateTime
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Transaction {
