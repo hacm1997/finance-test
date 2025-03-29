@@ -27,6 +27,7 @@ export type Mutation = {
 export type MutationCreateTransactionArgs = {
   amount: Scalars['Float']['input'];
   concept: Scalars['String']['input'];
+  date: Scalars['String']['input'];
 };
 
 
@@ -76,7 +77,23 @@ export type User = {
   role: Role;
 };
 
+export type TransactionFieldsFragment = { __typename?: 'Transaction', id: string, date: string, concept: string, amount: number, user: { __typename?: 'User', id: string, name?: string | null, email: string, role: Role } };
+
 export type UserFieldsFragment = { __typename?: 'User', id: string, name?: string | null, email: string, role: Role };
+
+export type CreateTransactionMutationVariables = Exact<{
+  concept: Scalars['String']['input'];
+  amount: Scalars['Float']['input'];
+  date: Scalars['String']['input'];
+}>;
+
+
+export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction?: { __typename?: 'Transaction', id: string, date: string, concept: string, amount: number, user: { __typename?: 'User', id: string, name?: string | null, email: string, role: Role } } | null };
+
+export type GetTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTransactionsQuery = { __typename?: 'Query', getTransactions: Array<{ __typename?: 'Transaction', id: string, date: string, concept: string, amount: number, user: { __typename?: 'User', id: string, name?: string | null, email: string, role: Role } } | null> };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -91,6 +108,91 @@ export const UserFieldsFragmentDoc = gql`
   role
 }
     `;
+export const TransactionFieldsFragmentDoc = gql`
+    fragment TransactionFields on Transaction {
+  id
+  date
+  concept
+  amount
+  user {
+    ...UserFields
+  }
+}
+    ${UserFieldsFragmentDoc}`;
+export const CreateTransactionDocument = gql`
+    mutation CreateTransaction($concept: String!, $amount: Float!, $date: String!) {
+  createTransaction(concept: $concept, amount: $amount, date: $date) {
+    ...TransactionFields
+  }
+}
+    ${TransactionFieldsFragmentDoc}`;
+export type CreateTransactionMutationFn = Apollo.MutationFunction<CreateTransactionMutation, CreateTransactionMutationVariables>;
+
+/**
+ * __useCreateTransactionMutation__
+ *
+ * To run a mutation, you first call `useCreateTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTransactionMutation, { data, loading, error }] = useCreateTransactionMutation({
+ *   variables: {
+ *      concept: // value for 'concept'
+ *      amount: // value for 'amount'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useCreateTransactionMutation(baseOptions?: Apollo.MutationHookOptions<CreateTransactionMutation, CreateTransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTransactionMutation, CreateTransactionMutationVariables>(CreateTransactionDocument, options);
+      }
+export type CreateTransactionMutationHookResult = ReturnType<typeof useCreateTransactionMutation>;
+export type CreateTransactionMutationResult = Apollo.MutationResult<CreateTransactionMutation>;
+export type CreateTransactionMutationOptions = Apollo.BaseMutationOptions<CreateTransactionMutation, CreateTransactionMutationVariables>;
+export const GetTransactionsDocument = gql`
+    query GetTransactions {
+  getTransactions {
+    ...TransactionFields
+  }
+}
+    ${TransactionFieldsFragmentDoc}`;
+
+/**
+ * __useGetTransactionsQuery__
+ *
+ * To run a query within a React component, call `useGetTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTransactionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTransactionsQuery(baseOptions?: Apollo.QueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, options);
+      }
+export function useGetTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, options);
+        }
+export function useGetTransactionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTransactionsQuery, GetTransactionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTransactionsQuery, GetTransactionsQueryVariables>(GetTransactionsDocument, options);
+        }
+export type GetTransactionsQueryHookResult = ReturnType<typeof useGetTransactionsQuery>;
+export type GetTransactionsLazyQueryHookResult = ReturnType<typeof useGetTransactionsLazyQuery>;
+export type GetTransactionsSuspenseQueryHookResult = ReturnType<typeof useGetTransactionsSuspenseQuery>;
+export type GetTransactionsQueryResult = Apollo.QueryResult<GetTransactionsQuery, GetTransactionsQueryVariables>;
 export const GetUsersDocument = gql`
     query GetUsers {
   getUsers {

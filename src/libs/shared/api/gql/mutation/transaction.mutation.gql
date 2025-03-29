@@ -1,0 +1,5 @@
+mutation CreateTransaction($concept: String!, $amount: Float!, $date: String!) {
+  createTransaction(concept: $concept, amount: $amount, date: $date) {
+    ...TransactionFields
+  }
+}

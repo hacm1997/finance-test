@@ -12,9 +12,9 @@ export default function MainLayout({
   };
 
   return (
-    <div>
+    <div className="flex gap-10">
       <VerticalMenu isMenuOpen={isMenuOpen} />
-      {children}
+      <div className="flex justify-center w-full p-8 mt-16">{children}</div>
     </div>
   );
 }

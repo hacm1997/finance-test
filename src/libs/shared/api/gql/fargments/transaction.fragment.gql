@@ -1,0 +1,9 @@
+fragment TransactionFields on Transaction {
+  id
+  date
+  concept
+  amount
+  user {
+    ...UserFields
+  }
+}

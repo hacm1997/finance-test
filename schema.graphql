@@ -36,6 +36,10 @@ type Query {
 }
 
 type Mutation {
-  createTransaction(concept: String!, amount: Float!): Transaction
+  createTransaction(
+    concept: String!
+    amount: Float!
+    date: String!
+  ): Transaction
   updateUserRole(userId: ID!, role: Role!): User
 }

@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa6';
 import { toast } from 'sonner';
 import { useMe } from '@/libs/hooks/use-me';
+import Image from 'next/image';
 
 interface Props {
   isMenuOpen: boolean;
@@ -30,12 +31,11 @@ export const VerticalMenu = ({ isMenuOpen }: Props) => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div
-      className={`z-10 fixed top-0 left-0 h-screen w-64 bg-[#14171F] border-none transition-transform duration-300 lg:block ${
-        isMenuOpen ? 'translate-x-0' : '-translate-x-64'
-      } lg:translate-x-0`}
-    >
-      <div className="pt-20 px-4 space-y-4">
+    <div className="z-10 h-screen w-[360px] bg-[#14171F] border-none transition-transform duration-300 lg:block">
+      <div className="pt-10 px-4 space-y-4">
+        <div>
+          <Image src="/logo-app.webp" alt="Logo App" width={280} height={40} />
+        </div>
         <div className="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-500 group">
           <FaCheckCircle className="text-[#E4E4E7] text-[20px]" />
           <span>

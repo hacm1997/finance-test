@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, useSuspenseQuery, useInfiniteQuery, useSuspenseInfiniteQuery, UseQueryOptions, UseSuspenseQueryOptions, UseInfiniteQueryOptions, InfiniteData, UseSuspenseInfiniteQueryOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery, useInfiniteQuery, useSuspenseInfiniteQuery, UseMutationOptions, UseQueryOptions, UseSuspenseQueryOptions, UseInfiniteQueryOptions, InfiniteData, UseSuspenseInfiniteQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -35,6 +35,7 @@ export type Mutation = {
 export type MutationCreateTransactionArgs = {
   amount: Scalars['Float']['input'];
   concept: Scalars['String']['input'];
+  date: Scalars['String']['input'];
 };
 
 
@@ -80,7 +81,23 @@ export type User = {
   role: Role;
 };
 
+export type TransactionFieldsFragment = { id: string, date: string, concept: string, amount: number, user: { id: string, name?: string | null, email: string, role: Role } };
+
 export type UserFieldsFragment = { id: string, name?: string | null, email: string, role: Role };
+
+export type CreateTransactionMutationVariables = Exact<{
+  concept: Scalars['String']['input'];
+  amount: Scalars['Float']['input'];
+  date: Scalars['String']['input'];
+}>;
+
+
+export type CreateTransactionMutation = { createTransaction?: { id: string, date: string, concept: string, amount: number, user: { id: string, name?: string | null, email: string, role: Role } } | null };
+
+export type GetTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTransactionsQuery = { getTransactions: Array<{ id: string, date: string, concept: string, amount: number, user: { id: string, name?: string | null, email: string, role: Role } } | null> };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -96,6 +113,144 @@ export const UserFieldsFragmentDoc = `
   role
 }
     `;
+export const TransactionFieldsFragmentDoc = `
+    fragment TransactionFields on Transaction {
+  id
+  date
+  concept
+  amount
+  user {
+    ...UserFields
+  }
+}
+    `;
+export const CreateTransactionDocument = `
+    mutation CreateTransaction($concept: String!, $amount: Float!, $date: String!) {
+  createTransaction(concept: $concept, amount: $amount, date: $date) {
+    ...TransactionFields
+  }
+}
+    ${TransactionFieldsFragmentDoc}
+${UserFieldsFragmentDoc}`;
+
+export const useCreateTransactionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateTransactionMutation, TError, CreateTransactionMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useMutation<CreateTransactionMutation, TError, CreateTransactionMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateTransaction'],
+    mutationFn: (variables?: CreateTransactionMutationVariables) => fetcher<CreateTransactionMutation, CreateTransactionMutationVariables>(client, CreateTransactionDocument, variables, headers)(),
+    ...options
+  }
+    )};
+
+
+useCreateTransactionMutation.fetcher = (client: GraphQLClient, variables: CreateTransactionMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateTransactionMutation, CreateTransactionMutationVariables>(client, CreateTransactionDocument, variables, headers);
+
+export const GetTransactionsDocument = `
+    query GetTransactions {
+  getTransactions {
+    ...TransactionFields
+  }
+}
+    ${TransactionFieldsFragmentDoc}
+${UserFieldsFragmentDoc}`;
+
+export const useGetTransactionsQuery = <
+      TData = GetTransactionsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetTransactionsQueryVariables,
+      options?: Omit<UseQueryOptions<GetTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetTransactionsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetTransactionsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetTransactions'] : ['GetTransactions', variables],
+    queryFn: fetcher<GetTransactionsQuery, GetTransactionsQueryVariables>(client, GetTransactionsDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useGetTransactionsQuery.getKey = (variables?: GetTransactionsQueryVariables) => variables === undefined ? ['GetTransactions'] : ['GetTransactions', variables];
+
+export const useSuspenseGetTransactionsQuery = <
+      TData = GetTransactionsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetTransactionsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<GetTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<GetTransactionsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseQuery<GetTransactionsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetTransactionsSuspense'] : ['GetTransactionsSuspense', variables],
+    queryFn: fetcher<GetTransactionsQuery, GetTransactionsQueryVariables>(client, GetTransactionsDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useSuspenseGetTransactionsQuery.getKey = (variables?: GetTransactionsQueryVariables) => variables === undefined ? ['GetTransactionsSuspense'] : ['GetTransactionsSuspense', variables];
+
+export const useInfiniteGetTransactionsQuery = <
+      TData = InfiniteData<GetTransactionsQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetTransactionsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<GetTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<GetTransactionsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useInfiniteQuery<GetTransactionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetTransactions.infinite'] : ['GetTransactions.infinite', variables],
+      queryFn: (metaData) => fetcher<GetTransactionsQuery, GetTransactionsQueryVariables>(client, GetTransactionsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteGetTransactionsQuery.getKey = (variables?: GetTransactionsQueryVariables) => variables === undefined ? ['GetTransactions.infinite'] : ['GetTransactions.infinite', variables];
+
+export const useSuspenseInfiniteGetTransactionsQuery = <
+      TData = InfiniteData<GetTransactionsQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetTransactionsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<GetTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<GetTransactionsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseInfiniteQuery<GetTransactionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetTransactions.infiniteSuspense'] : ['GetTransactions.infiniteSuspense', variables],
+      queryFn: (metaData) => fetcher<GetTransactionsQuery, GetTransactionsQueryVariables>(client, GetTransactionsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteGetTransactionsQuery.getKey = (variables?: GetTransactionsQueryVariables) => variables === undefined ? ['GetTransactions.infiniteSuspense'] : ['GetTransactions.infiniteSuspense', variables];
+
+
+useGetTransactionsQuery.fetcher = (client: GraphQLClient, variables?: GetTransactionsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetTransactionsQuery, GetTransactionsQueryVariables>(client, GetTransactionsDocument, variables, headers);
+
 export const GetUsersDocument = `
     query GetUsers {
   getUsers {

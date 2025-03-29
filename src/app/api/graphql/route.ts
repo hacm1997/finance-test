@@ -49,7 +49,7 @@ type Query {
 }
 
 type Mutation {
-  createTransaction(concept: String!, amount: Float!): Transaction
+  createTransaction(concept: String!, amount: Float!, date: String!): Transaction
   updateUserRole(userId: ID!, role: Role!): User
 }
 `;
@@ -103,14 +103,17 @@ const resolvers = {
   Mutation: {
     createTransaction: async (
       _: unknown,
-      { concept, amount }: CreateTransactionArgs,
+      { concept, amount, date }: CreateTransactionArgs,
       context: Context
     ) => {
       if (!context.user || context.user.role !== 'ADMIN')
         throw new Error('Access Denied');
 
       return await prisma.transaction.create({
-        data: { concept, amount, userId: context.user.id },
+        data: { concept, amount, date, userId: context.user.id },
+        include: {
+          user: true,
+        },
       });
     },
 

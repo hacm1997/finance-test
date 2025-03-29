@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
 export interface User {
@@ -32,6 +32,7 @@ export interface TransactionArgs {
 export interface CreateTransactionArgs {
   concept: string;
   amount: number;
+  date: Date;
 }
 
 export interface UpdateUserRoleArgs {

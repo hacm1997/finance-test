@@ -1,11 +1,11 @@
 'use client';
-import { Transaction } from '@/libs/domain/components/dashboard/home';
+import { Reports } from '@/libs/domain/components/dashboard/reports';
 import { MainLayout } from '@/libs/domain/components/layout';
 
 export default async function Home() {
   return (
     <MainLayout>
-      <Transaction />
+      <Reports />
     </MainLayout>
   );
 }
