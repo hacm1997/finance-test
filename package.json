@@ -8,7 +8,7 @@
     "start": "next start",
     "gen-types": "graphql-codegen --config codegen.ts",
     "lint": "next lint",
-    "vercel-build": "npm install --legacy-peer-deps && next build"
+    "vercel-build": "npm install --legacy-peer-deps && npx prisma generate && next build"
   },
   "dependencies": {
     "@apollo/client": "^3.13.5",
