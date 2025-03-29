@@ -62,14 +62,14 @@
     "@graphql-codegen/client-preset": "4.7.0",
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
-    "@tailwindcss/postcss": "^4.0.17",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "prisma": "^6.5.0",
-    "tailwindcss": "^4.0.17",
+    "tailwindcss": "^4",
     "typescript": "^5"
   },
   "overrides": {
