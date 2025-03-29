@@ -1,0 +1,10 @@
+fragment ReportFields on Report {
+  balance
+  totalExpenses
+  totalIncome
+}
+
+fragment ReportConceptFields on ReportTransaction {
+  amount
+  concept
+}

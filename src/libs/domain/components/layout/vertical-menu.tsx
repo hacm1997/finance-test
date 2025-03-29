@@ -11,6 +11,7 @@ import {
 import { toast } from 'sonner';
 import { useMe } from '@/libs/hooks/use-me';
 import Image from 'next/image';
+import { ROLES } from '@/libs/utils/constant';
 
 interface Props {
   isMenuOpen: boolean;
@@ -48,11 +49,10 @@ export const VerticalMenu = ({ isMenuOpen }: Props) => {
           href="/dashboard"
           aria-label="dashboard"
           className={`relative px-4 py-3 flex items-center space-x-4 rounded-lg 
-                        ${
-                          isActive('/dashboard')
-                            ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
-                            : 'text-gray-500 hover:bg-gray-800'
-                        }`}
+                        ${isActive('/dashboard')
+              ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
+              : 'text-gray-500 hover:bg-gray-800'
+            }`}
         >
           <FaArrowRightArrowLeft className="text-[#E4E4E7] text-[20px]" />
           <span className="-mr-1 font-medium">Ingresos y egresos</span>
@@ -61,28 +61,28 @@ export const VerticalMenu = ({ isMenuOpen }: Props) => {
         <Link
           href="/dashboard/users"
           className={`relative px-4 py-3 flex items-center space-x-4 rounded-lg 
-                    ${
-                      isActive('/dashboard/users')
-                        ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
-                        : 'text-gray-500 hover:bg-gray-800'
-                    }`}
+                    ${isActive('/dashboard/users')
+              ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
+              : 'text-gray-500 hover:bg-gray-800'
+            }`}
         >
           <FaUsersGear className="text-[#E4E4E7] text-[20px]" />
           <span>Usuarios</span>
         </Link>
 
-        <Link
-          href="/dashboard/reports"
-          className={`relative px-4 py-3 flex items-center space-x-4 rounded-lg 
-                    ${
-                      isActive('/dashboard/reports')
-                        ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
-                        : 'text-gray-500 hover:bg-gray-800'
-                    }`}
-        >
-          <FaSquarePollVertical className="text-[#E4E4E7] text-[20px]" />
-          <span>Reportes</span>
-        </Link>
+        {user && user.user.role === ROLES.ADMIN &&
+          <Link
+            href="/dashboard/reports"
+            className={`relative px-4 py-3 flex items-center space-x-4 rounded-lg 
+                    ${isActive('/dashboard/reports')
+                ? 'bg-gradient-to-r from-sky-600 to-cyan-400 text-[#E4E4E7]'
+                : 'text-gray-500 hover:bg-gray-800'
+              }`}
+          >
+            <FaSquarePollVertical className="text-[#E4E4E7] text-[20px]" />
+            <span>Reportes</span>
+          </Link>
+        }
 
         <a
           onClick={handlerLogout}

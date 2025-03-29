@@ -45,6 +45,7 @@ export type MutationUpdateUserRoleArgs = {
 };
 
 export type Query = {
+  getReportTransactions: Array<ReportTransaction>;
   getReports: Report;
   getTransactions: Array<Maybe<Transaction>>;
   getUsers: Array<Maybe<User>>;
@@ -59,6 +60,11 @@ export type Report = {
   balance: Scalars['Float']['output'];
   totalExpenses: Scalars['Float']['output'];
   totalIncome: Scalars['Float']['output'];
+};
+
+export type ReportTransaction = {
+  amount: Scalars['Float']['output'];
+  concept: Scalars['String']['output'];
 };
 
 export enum Role {
@@ -81,6 +87,10 @@ export type User = {
   role: Role;
 };
 
+export type ReportFieldsFragment = { balance: number, totalExpenses: number, totalIncome: number };
+
+export type ReportConceptFieldsFragment = { amount: number, concept: string };
+
 export type TransactionFieldsFragment = { id: string, date: string, concept: string, amount: number, user: { id: string, name?: string | null, email: string, role: Role } };
 
 export type UserFieldsFragment = { id: string, name?: string | null, email: string, role: Role };
@@ -94,6 +104,16 @@ export type CreateTransactionMutationVariables = Exact<{
 
 export type CreateTransactionMutation = { createTransaction?: { id: string, date: string, concept: string, amount: number, user: { id: string, name?: string | null, email: string, role: Role } } | null };
 
+export type GetReportsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetReportsQuery = { getReports: { balance: number, totalExpenses: number, totalIncome: number } };
+
+export type GetReportsConcetpQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetReportsConcetpQuery = { getReportTransactions: Array<{ amount: number, concept: string }> };
+
 export type GetTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -105,6 +125,19 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetUsersQuery = { getUsers: Array<{ id: string, name?: string | null, email: string, role: Role } | null> };
 
 
+export const ReportFieldsFragmentDoc = `
+    fragment ReportFields on Report {
+  balance
+  totalExpenses
+  totalIncome
+}
+    `;
+export const ReportConceptFieldsFragmentDoc = `
+    fragment ReportConceptFields on ReportTransaction {
+  amount
+  concept
+}
+    `;
 export const UserFieldsFragmentDoc = `
     fragment UserFields on User {
   id
@@ -152,6 +185,200 @@ export const useCreateTransactionMutation = <
 
 
 useCreateTransactionMutation.fetcher = (client: GraphQLClient, variables: CreateTransactionMutationVariables, headers?: RequestInit['headers']) => fetcher<CreateTransactionMutation, CreateTransactionMutationVariables>(client, CreateTransactionDocument, variables, headers);
+
+export const GetReportsDocument = `
+    query GetReports {
+  getReports {
+    ...ReportFields
+  }
+}
+    ${ReportFieldsFragmentDoc}`;
+
+export const useGetReportsQuery = <
+      TData = GetReportsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetReportsQueryVariables,
+      options?: Omit<UseQueryOptions<GetReportsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetReportsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetReportsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetReports'] : ['GetReports', variables],
+    queryFn: fetcher<GetReportsQuery, GetReportsQueryVariables>(client, GetReportsDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useGetReportsQuery.getKey = (variables?: GetReportsQueryVariables) => variables === undefined ? ['GetReports'] : ['GetReports', variables];
+
+export const useSuspenseGetReportsQuery = <
+      TData = GetReportsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetReportsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<GetReportsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<GetReportsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseQuery<GetReportsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetReportsSuspense'] : ['GetReportsSuspense', variables],
+    queryFn: fetcher<GetReportsQuery, GetReportsQueryVariables>(client, GetReportsDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useSuspenseGetReportsQuery.getKey = (variables?: GetReportsQueryVariables) => variables === undefined ? ['GetReportsSuspense'] : ['GetReportsSuspense', variables];
+
+export const useInfiniteGetReportsQuery = <
+      TData = InfiniteData<GetReportsQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetReportsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<GetReportsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<GetReportsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useInfiniteQuery<GetReportsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetReports.infinite'] : ['GetReports.infinite', variables],
+      queryFn: (metaData) => fetcher<GetReportsQuery, GetReportsQueryVariables>(client, GetReportsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteGetReportsQuery.getKey = (variables?: GetReportsQueryVariables) => variables === undefined ? ['GetReports.infinite'] : ['GetReports.infinite', variables];
+
+export const useSuspenseInfiniteGetReportsQuery = <
+      TData = InfiniteData<GetReportsQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetReportsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<GetReportsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<GetReportsQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseInfiniteQuery<GetReportsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetReports.infiniteSuspense'] : ['GetReports.infiniteSuspense', variables],
+      queryFn: (metaData) => fetcher<GetReportsQuery, GetReportsQueryVariables>(client, GetReportsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteGetReportsQuery.getKey = (variables?: GetReportsQueryVariables) => variables === undefined ? ['GetReports.infiniteSuspense'] : ['GetReports.infiniteSuspense', variables];
+
+
+useGetReportsQuery.fetcher = (client: GraphQLClient, variables?: GetReportsQueryVariables, headers?: RequestInit['headers']) => fetcher<GetReportsQuery, GetReportsQueryVariables>(client, GetReportsDocument, variables, headers);
+
+export const GetReportsConcetpDocument = `
+    query GetReportsConcetp {
+  getReportTransactions {
+    ...ReportConceptFields
+  }
+}
+    ${ReportConceptFieldsFragmentDoc}`;
+
+export const useGetReportsConcetpQuery = <
+      TData = GetReportsConcetpQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetReportsConcetpQueryVariables,
+      options?: Omit<UseQueryOptions<GetReportsConcetpQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetReportsConcetpQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useQuery<GetReportsConcetpQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetReportsConcetp'] : ['GetReportsConcetp', variables],
+    queryFn: fetcher<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(client, GetReportsConcetpDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useGetReportsConcetpQuery.getKey = (variables?: GetReportsConcetpQueryVariables) => variables === undefined ? ['GetReportsConcetp'] : ['GetReportsConcetp', variables];
+
+export const useSuspenseGetReportsConcetpQuery = <
+      TData = GetReportsConcetpQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetReportsConcetpQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<GetReportsConcetpQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<GetReportsConcetpQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseQuery<GetReportsConcetpQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetReportsConcetpSuspense'] : ['GetReportsConcetpSuspense', variables],
+    queryFn: fetcher<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(client, GetReportsConcetpDocument, variables, headers),
+    ...options
+  }
+    )};
+
+useSuspenseGetReportsConcetpQuery.getKey = (variables?: GetReportsConcetpQueryVariables) => variables === undefined ? ['GetReportsConcetpSuspense'] : ['GetReportsConcetpSuspense', variables];
+
+export const useInfiniteGetReportsConcetpQuery = <
+      TData = InfiniteData<GetReportsConcetpQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetReportsConcetpQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<GetReportsConcetpQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<GetReportsConcetpQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useInfiniteQuery<GetReportsConcetpQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetReportsConcetp.infinite'] : ['GetReportsConcetp.infinite', variables],
+      queryFn: (metaData) => fetcher<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(client, GetReportsConcetpDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteGetReportsConcetpQuery.getKey = (variables?: GetReportsConcetpQueryVariables) => variables === undefined ? ['GetReportsConcetp.infinite'] : ['GetReportsConcetp.infinite', variables];
+
+export const useSuspenseInfiniteGetReportsConcetpQuery = <
+      TData = InfiniteData<GetReportsConcetpQuery>,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: GetReportsConcetpQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<GetReportsConcetpQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<GetReportsConcetpQuery, TError, TData>['queryKey'] },
+      headers?: RequestInit['headers']
+    ) => {
+    
+    return useSuspenseInfiniteQuery<GetReportsConcetpQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GetReportsConcetp.infiniteSuspense'] : ['GetReportsConcetp.infiniteSuspense', variables],
+      queryFn: (metaData) => fetcher<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(client, GetReportsConcetpDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteGetReportsConcetpQuery.getKey = (variables?: GetReportsConcetpQueryVariables) => variables === undefined ? ['GetReportsConcetp.infiniteSuspense'] : ['GetReportsConcetp.infiniteSuspense', variables];
+
+
+useGetReportsConcetpQuery.fetcher = (client: GraphQLClient, variables?: GetReportsConcetpQueryVariables, headers?: RequestInit['headers']) => fetcher<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(client, GetReportsConcetpDocument, variables, headers);
 
 export const GetTransactionsDocument = `
     query GetTransactions {

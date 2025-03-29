@@ -1,0 +1,11 @@
+query GetReports {
+  getReports {
+    ...ReportFields
+  }
+}
+
+query GetReportsConcetp {
+  getReportTransactions {
+    ...ReportConceptFields
+  }
+}

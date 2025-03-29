@@ -1,5 +1,5 @@
-import { Transaction } from '@/libs/shared/api/requests/react-query';
+import { ReportTransaction } from "@/libs/shared/api/requests/react-query";
 
 export interface GraphicProps {
-  transactions: Transaction[];
+  reportConcept: ReportTransaction[];
 }

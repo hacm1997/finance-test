@@ -17,34 +17,29 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export const Graphic = ({ transactions }: GraphicProps) => {
-  const mergedData = Object.values(
-    (transactions ?? []).reduce<
-      Record<string, { concept: string; amount: number }>
-    >((acc, { concept, amount }) => {
-      if (!acc[concept]) {
-        acc[concept] = { concept, amount: 0 };
-      }
-      acc[concept].amount += amount;
-      return acc;
-    }, {})
-  );
+export const Graphic = ({ reportConcept }: GraphicProps) => {
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[300px] w-[40%]">
-      <BarChart accessibilityLayer data={mergedData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="concept"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => value.slice(0, 16)}
-        />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="amount" fill="var(--color-amount)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <div className='flex flex-col gap-8'>
+      <ChartContainer
+        config={chartConfig}
+        className="min-h-[300px] bg-gray-50 rounded-2xl"
+        style={{ boxShadow: '0px 4px 10px #00000029' }}
+      >
+        <BarChart accessibilityLayer data={reportConcept}>
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="concept"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 16)}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          <Bar dataKey="amount" fill="var(--color-amount)" radius={4} />
+        </BarChart>
+      </ChartContainer>
+    </div>
   );
 };

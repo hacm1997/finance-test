@@ -18,6 +18,11 @@ type Transaction {
   user: User!
 }
 
+type ReportTransaction {
+  concept: String!
+  amount: Float!
+}
+
 enum Role {
   USER
   ADMIN
@@ -33,6 +38,7 @@ type Query {
   getTransactions(filter: String): [Transaction]!
   getUsers: [User]!
   getReports: Report!
+  getReportTransactions: [ReportTransaction!]!
 }
 
 type Mutation {

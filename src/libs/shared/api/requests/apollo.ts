@@ -38,6 +38,7 @@ export type MutationUpdateUserRoleArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getReportTransactions: Array<ReportTransaction>;
   getReports: Report;
   getTransactions: Array<Maybe<Transaction>>;
   getUsers: Array<Maybe<User>>;
@@ -53,6 +54,12 @@ export type Report = {
   balance: Scalars['Float']['output'];
   totalExpenses: Scalars['Float']['output'];
   totalIncome: Scalars['Float']['output'];
+};
+
+export type ReportTransaction = {
+  __typename?: 'ReportTransaction';
+  amount: Scalars['Float']['output'];
+  concept: Scalars['String']['output'];
 };
 
 export enum Role {
@@ -77,6 +84,10 @@ export type User = {
   role: Role;
 };
 
+export type ReportFieldsFragment = { __typename?: 'Report', balance: number, totalExpenses: number, totalIncome: number };
+
+export type ReportConceptFieldsFragment = { __typename?: 'ReportTransaction', amount: number, concept: string };
+
 export type TransactionFieldsFragment = { __typename?: 'Transaction', id: string, date: string, concept: string, amount: number, user: { __typename?: 'User', id: string, name?: string | null, email: string, role: Role } };
 
 export type UserFieldsFragment = { __typename?: 'User', id: string, name?: string | null, email: string, role: Role };
@@ -90,6 +101,16 @@ export type CreateTransactionMutationVariables = Exact<{
 
 export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction?: { __typename?: 'Transaction', id: string, date: string, concept: string, amount: number, user: { __typename?: 'User', id: string, name?: string | null, email: string, role: Role } } | null };
 
+export type GetReportsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetReportsQuery = { __typename?: 'Query', getReports: { __typename?: 'Report', balance: number, totalExpenses: number, totalIncome: number } };
+
+export type GetReportsConcetpQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetReportsConcetpQuery = { __typename?: 'Query', getReportTransactions: Array<{ __typename?: 'ReportTransaction', amount: number, concept: string }> };
+
 export type GetTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -100,6 +121,19 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, name?: string | null, email: string, role: Role } | null> };
 
+export const ReportFieldsFragmentDoc = gql`
+    fragment ReportFields on Report {
+  balance
+  totalExpenses
+  totalIncome
+}
+    `;
+export const ReportConceptFieldsFragmentDoc = gql`
+    fragment ReportConceptFields on ReportTransaction {
+  amount
+  concept
+}
+    `;
 export const UserFieldsFragmentDoc = gql`
     fragment UserFields on User {
   id
@@ -154,6 +188,84 @@ export function useCreateTransactionMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateTransactionMutationHookResult = ReturnType<typeof useCreateTransactionMutation>;
 export type CreateTransactionMutationResult = Apollo.MutationResult<CreateTransactionMutation>;
 export type CreateTransactionMutationOptions = Apollo.BaseMutationOptions<CreateTransactionMutation, CreateTransactionMutationVariables>;
+export const GetReportsDocument = gql`
+    query GetReports {
+  getReports {
+    ...ReportFields
+  }
+}
+    ${ReportFieldsFragmentDoc}`;
+
+/**
+ * __useGetReportsQuery__
+ *
+ * To run a query within a React component, call `useGetReportsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReportsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetReportsQuery(baseOptions?: Apollo.QueryHookOptions<GetReportsQuery, GetReportsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReportsQuery, GetReportsQueryVariables>(GetReportsDocument, options);
+      }
+export function useGetReportsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReportsQuery, GetReportsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReportsQuery, GetReportsQueryVariables>(GetReportsDocument, options);
+        }
+export function useGetReportsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetReportsQuery, GetReportsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetReportsQuery, GetReportsQueryVariables>(GetReportsDocument, options);
+        }
+export type GetReportsQueryHookResult = ReturnType<typeof useGetReportsQuery>;
+export type GetReportsLazyQueryHookResult = ReturnType<typeof useGetReportsLazyQuery>;
+export type GetReportsSuspenseQueryHookResult = ReturnType<typeof useGetReportsSuspenseQuery>;
+export type GetReportsQueryResult = Apollo.QueryResult<GetReportsQuery, GetReportsQueryVariables>;
+export const GetReportsConcetpDocument = gql`
+    query GetReportsConcetp {
+  getReportTransactions {
+    ...ReportConceptFields
+  }
+}
+    ${ReportConceptFieldsFragmentDoc}`;
+
+/**
+ * __useGetReportsConcetpQuery__
+ *
+ * To run a query within a React component, call `useGetReportsConcetpQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReportsConcetpQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReportsConcetpQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetReportsConcetpQuery(baseOptions?: Apollo.QueryHookOptions<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(GetReportsConcetpDocument, options);
+      }
+export function useGetReportsConcetpLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(GetReportsConcetpDocument, options);
+        }
+export function useGetReportsConcetpSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>(GetReportsConcetpDocument, options);
+        }
+export type GetReportsConcetpQueryHookResult = ReturnType<typeof useGetReportsConcetpQuery>;
+export type GetReportsConcetpLazyQueryHookResult = ReturnType<typeof useGetReportsConcetpLazyQuery>;
+export type GetReportsConcetpSuspenseQueryHookResult = ReturnType<typeof useGetReportsConcetpSuspenseQuery>;
+export type GetReportsConcetpQueryResult = Apollo.QueryResult<GetReportsConcetpQuery, GetReportsConcetpQueryVariables>;
 export const GetTransactionsDocument = gql`
     query GetTransactions {
   getTransactions {
