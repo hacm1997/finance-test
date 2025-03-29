@@ -45,7 +45,7 @@ export const authOptions: AuthOptions = {
       if (existingUser) {
         // If the user already exists, we check if he/she has an account with this provider.
         const existingAccount = existingUser.accounts.find(
-          (acc) => acc.provider === account.provider
+          (acc: { provider: string }) => acc.provider === account.provider
         );
 
         if (!existingAccount) {

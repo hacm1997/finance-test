@@ -54,7 +54,6 @@ export const CreateTransaction = ({
     });
   };
 
-  console.log('form data => ', formData);
   const createNewTransaction = async (
     ev: React.ChangeEvent<HTMLFormElement>
   ) => {
