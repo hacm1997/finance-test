@@ -60,7 +60,7 @@
     "@graphql-codegen/client-preset": "4.7.0",
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@graphql-codegen/typescript-react-query": "^6.1.0",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.0.17",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
